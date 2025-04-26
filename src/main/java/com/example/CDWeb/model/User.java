@@ -8,9 +8,9 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Tự động tăng ID
-    private String id;
+    private Long id;
 
-    @Column(nullable = false, length = 50) // Cột "name" không được null, tối đa 50 ký tự
+    @Column(unique = true, nullable = false, length = 50) // Cột "name" không được null, tối đa 50 ký tự
     private String username;
 
     @Column(unique = true, nullable = false) // Cột "email" phải là duy nhất
@@ -34,14 +34,8 @@ public class User {
         this.numberphone = numberphone;
         this.address = address;
     }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getUsername() {
         return username;
