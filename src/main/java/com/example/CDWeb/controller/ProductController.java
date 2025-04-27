@@ -2,6 +2,7 @@ package com.example.CDWeb.controller;
 
 import com.example.CDWeb.model.Product;
 import com.example.CDWeb.repository.ProductRepository;
+import com.example.CDWeb.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,15 +12,15 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class ProductController {
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable Integer id) {
-        return productRepository.findById(id).orElse(null);
+        return productService.getProductById(id);
     }
 }

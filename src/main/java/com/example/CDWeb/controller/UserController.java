@@ -2,6 +2,7 @@ package com.example.CDWeb.controller;
 
 import com.example.CDWeb.model.User;
 import com.example.CDWeb.repository.UserRepository;
+import com.example.CDWeb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,15 +13,20 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
+
+    @PostMapping("/create")
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
+    }
 
     @GetMapping
     public List<User> getAllUser() {
-        return userRepository.findAll();
+        return userService.getAllUser();
     }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable String id) {
-        return userRepository.findById(Long.valueOf(id)).orElse(null);
+        return userService.getUserById(id);
     }
 }
