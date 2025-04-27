@@ -44,7 +44,7 @@ public class JwtUtil {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -98,4 +98,5 @@ public class JwtUtil {
         String username2 = jwtUtil.extractUsername(token);
         System.out.println(username2);
     }
+
 }

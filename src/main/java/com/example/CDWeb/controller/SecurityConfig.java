@@ -2,6 +2,7 @@ package com.example.CDWeb.controller;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,13 +29,23 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {// phân loại api được cho phép và không
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Cho phép /auth
+
+                        //permission
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/category").permitAll()
+                        .requestMatchers("/api/product").permitAll()
+                        .requestMatchers("/api/logout").permitAll()
+                        //unauthorized
+                        .requestMatchers(HttpMethod.GET, "/api/category/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/product/{id}").authenticated()
+
                         .anyRequest().authenticated()
                 )
+
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
