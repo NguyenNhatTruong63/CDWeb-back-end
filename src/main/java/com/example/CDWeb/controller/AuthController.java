@@ -1,10 +1,9 @@
 package com.example.CDWeb.controller;
 
 
-import com.example.CDWeb.model.LoginRequest;
-import com.example.CDWeb.model.Token;
-import com.example.CDWeb.model.User;
+import com.example.CDWeb.model.*;
 import com.example.CDWeb.repository.TokenRepository;
+import com.example.CDWeb.service.CartService;
 import com.example.CDWeb.service.TokenService;
 import com.example.CDWeb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +12,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.CDWeb.serviceImpl.UserServiceImpl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CartService cartService;
+
+
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -31,8 +35,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        userService.register(user);
-        return ResponseEntity.ok("Đăng ký thành công!");
+        try {
+            userService.register(user);
+            return ResponseEntity.ok("Đăng ký thành công!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
@@ -45,6 +53,20 @@ public class AuthController {
             Token newToken = new Token(user.getUsername(), token, new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10));
             tokenService.saveToken(newToken);
             // Tạo response chứa thông tin user và token
+
+
+            Cart cart = cartService.getCartByUserId(user.getId());
+            List<CartItem> cartItems = cartService.findByCartId(cart.getId());
+
+            // Map sản phẩm từ cartItem
+            List<Map<String, Object>> products = cartItems.stream().map(item -> {
+                Map<String, Object> productInfo = new HashMap<>();
+                productInfo.put("id", item.getProduct().getId());
+                productInfo.put("name", item.getProduct().getName());
+                productInfo.put("quantity", item.getQuantity());
+                return productInfo;
+            }).toList();
+
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Đăng nhập thành công");
             response.put("token", token);
@@ -57,7 +79,10 @@ public class AuthController {
             // thêm thông tin khác nếu cần
 
             response.put("user", userInfo);
-
+            response.put("cart", Map.of(
+                    "idUser", user.getId(),
+                    "products", products
+            ));
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai username hoặc password");
