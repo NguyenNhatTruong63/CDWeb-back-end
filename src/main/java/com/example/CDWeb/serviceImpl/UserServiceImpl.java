@@ -1,7 +1,9 @@
 package com.example.CDWeb.serviceImpl;
 
 
+import com.example.CDWeb.model.Cart;
 import com.example.CDWeb.model.User;
+import com.example.CDWeb.repository.CartRepository;
 import com.example.CDWeb.repository.UserRepository;
 import com.example.CDWeb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,27 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CartRepository cartRepository;
 
     @Override
     public void register(User user) {
-        userRepository.save(user);
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email đã được sử dụng");
+        }else if(userRepository.existsByUsername(user.getUsername())) {
+            throw new IllegalArgumentException("Username đã được sử dụng");
+
+        }else{
+            userRepository.save(user);
+            User savedUser = userRepository.save(user);
+
+            Cart cart = new Cart();
+            cart.setUserId(savedUser.getId()); // Gắn userId
+            cartRepository.save(cart);
+        }
+
+
     }
 
     @Override

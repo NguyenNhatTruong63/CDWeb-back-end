@@ -37,11 +37,11 @@ public class SecurityConfig {
                         //permission
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/category").permitAll()
-                        .requestMatchers("/api/product").permitAll()
+                        .requestMatchers("/api/product/**").permitAll()
                         .requestMatchers("/api/logout").permitAll()
                         //unauthorized
                         .requestMatchers(HttpMethod.GET, "/api/category/{id}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/product/{id}").authenticated()
+                     //   .requestMatchers(HttpMethod.GET, "/api/product/{id}").authenticated()
 
                         .anyRequest().authenticated()
                 )
