@@ -19,6 +19,12 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private CartItemRepository cartItemRepository;
+
+    @Override
+    public void saveCart(Cart cart) {
+        cartRepository.save(cart);
+    }
+
     @Override
     public Cart getCartById(int id) {
         return null;
@@ -32,6 +38,17 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartItem> findByCartId(Long cartId){
       return   cartItemRepository.findByCartId(cartId);
-
     }
+
+    @Override
+    public CartItem findByCartIdAndProductIdAndSizeIdAndColorId(Long cartId, int productId, Long sizeId, Long colorId) {
+        return cartItemRepository.findByCartIdAndProductIdAndSizeIdAndColorId(cartId, productId, sizeId, colorId)  ;
+    }
+
+    @Override
+    public void saveItem(CartItem cartItem) {
+        cartItemRepository.save(cartItem);
+    }
+
+
 }

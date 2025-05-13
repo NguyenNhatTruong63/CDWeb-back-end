@@ -61,9 +61,27 @@ public class AuthController {
             // Map sản phẩm từ cartItem
             List<Map<String, Object>> products = cartItems.stream().map(item -> {
                 Map<String, Object> productInfo = new HashMap<>();
-                productInfo.put("id", item.getProduct().getId());
-                productInfo.put("name", item.getProduct().getName());
+                Product product = item.getProduct();
+                Size size = item.getSize();
+                Color color = item.getColor();
+
+                productInfo.put("id", product.getId());
+                productInfo.put("name", product.getName());
                 productInfo.put("quantity", item.getQuantity());
+                productInfo.put("img", product.getImg());
+                productInfo.put("price", product.getPrice());
+                // Size
+                Map<String, Object> sizeInfo = new HashMap<>();
+                sizeInfo.put("id", size.getId());
+                sizeInfo.put("value", size.getValue()); // ví dụ name: "42" hoặc "XL"
+                productInfo.put("size", sizeInfo);
+
+                // Color
+                Map<String, Object> colorInfo = new HashMap<>();
+                colorInfo.put("id", color.getId());
+                colorInfo.put("name", color.getName()); // ví dụ: "Red", "Black"
+                productInfo.put("color", colorInfo);
+
                 return productInfo;
             }).toList();
 
