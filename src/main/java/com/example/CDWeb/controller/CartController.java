@@ -1,8 +1,6 @@
 package com.example.CDWeb.controller;
 
 import com.example.CDWeb.model.*;
-import com.example.CDWeb.repository.CartItemRepository;
-import com.example.CDWeb.repository.CartRepository;
 import com.example.CDWeb.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -82,7 +80,7 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addToCart(@RequestBody AddToCartRequest request ,@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<?> addToCart(@RequestBody CartUpdateRequest request , @RequestHeader("Authorization") String authorizationHeader) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Không có token hoặc token không hợp lệ
         }
@@ -126,4 +124,72 @@ public class CartController {
         return ResponseEntity.ok("Thêm sản phẩm vào giỏ hàng thành công!");
     }
 
+    @PostMapping("/decrease")
+    public ResponseEntity<?> decreaseCartItem(@RequestBody CartUpdateRequest request , @RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Không có token hoặc token không hợp lệ
+        }
+
+        // Lấy token từ header
+        String token = authorizationHeader.substring(7); // Loại bỏ phần "Bearer " ở đầu
+
+        // Kiểm tra token trước khi thực hiện các thao tác
+        if (!tokenService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);  // Token không hợp lệ
+        }
+        Cart cart = cartService.getCartByUserId(request.getUserId());
+        if (cart == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy giỏ hàng");
+        }
+
+        CartItem existingItem = cartService.findByCartIdAndProductIdAndSizeIdAndColorId(
+                cart.getId(), request.getProductId(), request.getSizeId(), request.getColorId()
+        );
+
+
+        if (existingItem != null) {
+            if(existingItem.getQuantity()>=1){
+                existingItem.setQuantity(existingItem.getQuantity() - request.getQuantity());
+                cartService.saveItem(existingItem);
+            }else{
+                cartService.deleteItem(existingItem);
+            }
+
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm trong giỏ hàng");
+        }
+
+        return ResponseEntity.ok("Giảm số lượng thành công");
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteCartItem(@RequestBody CartUpdateRequest request , @RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Không có token hoặc token không hợp lệ
+        }
+
+        // Lấy token từ header
+        String token = authorizationHeader.substring(7); // Loại bỏ phần "Bearer " ở đầu
+
+        // Kiểm tra token trước khi thực hiện các thao tác
+        if (!tokenService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);  // Token không hợp lệ
+        }
+        Cart cart = cartService.getCartByUserId(request.getUserId());
+        if (cart == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy giỏ hàng");
+        }
+
+        CartItem existingItem = cartService.findByCartIdAndProductIdAndSizeIdAndColorId(
+                cart.getId(), request.getProductId(), request.getSizeId(), request.getColorId()
+        );
+
+        if (existingItem != null) {
+                cartService.deleteItem(existingItem);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm trong giỏ hàng");
+        }
+
+        return ResponseEntity.ok("Xóa sản phẩm thành công");
+    }
 }
