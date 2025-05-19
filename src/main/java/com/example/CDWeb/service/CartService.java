@@ -12,4 +12,5 @@ public interface CartService {
     List<CartItem> findByCartId(Long cartId);
     CartItem findByCartIdAndProductIdAndSizeIdAndColorId(Long cartId, int productId, Long sizeId, Long colorId);
     void saveItem(CartItem cartItem);
+    void deleteItem(CartItem cartItem);
 }

@@ -43,7 +43,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/product/**").permitAll()
                         .requestMatchers("/api/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/category/{id}").authenticated()
+
+                        //cart
                         .requestMatchers(HttpMethod.POST, "/api/cart/add").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/cart/decrease").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/cart/delete").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

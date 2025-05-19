@@ -1,6 +1,6 @@
 package com.example.CDWeb.model;
 
-public class AddToCartRequest {
+public class CartUpdateRequest {
     private Long userId;
     private int productId;
     private Long sizeId;
