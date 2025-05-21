@@ -1,10 +1,10 @@
 package com.example.CDWeb.repository;
 
-import com.example.CDWeb.model.Cart;
+import com.example.CDWeb.model.Color;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, Long> {
-    Cart findByUserId(Long userId);
+public interface ColorRepository extends JpaRepository<Color, Long> {
+    Color getColorById(long id);
 }

@@ -25,10 +25,6 @@ public class Product {
     @JoinColumn(name = "category", referencedColumnName = "id") // tên cột trong bảng product
     private Category category;
 
-//    @ManyToOne
-//    @JoinColumn(name = "additionalImages", referencedColumnName = "id")
-//    @JsonManagedReference
-//    private AdditionalImages additionalImages;
 
     @ElementCollection
     @CollectionTable(name = "additionalImages", joinColumns = @JoinColumn(name = "product_id"))
@@ -36,20 +32,31 @@ public class Product {
     private List<String> additionalImages;
 
 
-    @ElementCollection
-    @CollectionTable(name = "product_size", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "size")
-    private List<Integer> size;
+    @ManyToMany
+    @JoinTable(
+            name = "product_size",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "size_id")
+    )
+    private List<Size> sizes;
 
-    @ElementCollection
-    @CollectionTable(name = "product_tint", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "tint")
-    private List<String> tint;
+    @ManyToMany
+    @JoinTable(
+            name = "product_color",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "color_id")
+    )
+    private List<Color> colors;
 
 
 
+//    @ManyToOne
+//    @JoinColumn(name = "additionalImages", referencedColumnName = "id")
+//    @JsonManagedReference
+//    private AdditionalImages additionalImages;
 
     // Getters and setters
+
 
     public int getId() {
         return id;
@@ -99,27 +106,27 @@ public class Product {
         this.category = category;
     }
 
-    public List<Integer> getSize() {
-        return size;
-    }
-
-    public void setSize(List<Integer> size) {
-        this.size = size;
-    }
-
-    public List<String> getTint() {
-        return tint;
-    }
-
-    public void setTint(List<String> tint) {
-        this.tint = tint;
-    }
-
     public List<String> getAdditionalImages() {
         return additionalImages;
     }
 
     public void setAdditionalImages(List<String> additionalImages) {
         this.additionalImages = additionalImages;
+    }
+
+    public List<Size> getSizes() {
+        return sizes;
+    }
+
+    public void setSizes(List<Size> sizes) {
+        this.sizes = sizes;
+    }
+
+    public List<Color> getColors() {
+        return colors;
+    }
+
+    public void setColors(List<Color> colors) {
+        this.colors = colors;
     }
 }
