@@ -8,4 +8,9 @@ import java.util.List;
 public interface ProductService {
     List<Product> getAllProducts();
     Product getProductById(Integer id);
+
+    List<Product> searchProduct(String key);
+
+    List<Product> getRandomProducts(int limit);
+
 }
