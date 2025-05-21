@@ -37,6 +37,20 @@ public class ProductController {
         ProductResponse response = convertToResponse(product) ;
         return ResponseEntity.ok(response);
     }
+
+
+
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam("query") String key) {
+        return productService.searchProduct(key);
+    }
+
+    @GetMapping("/random")
+    public List<Product> getRandomProduct(@RequestParam(value = "limit", defaultValue = "4") int limit) {
+        return productService.getRandomProducts(limit);
+    }
+    
+
     public ProductResponse convertToResponse(Product product) {
         ProductResponse dto = new ProductResponse();
         dto.setId(product.getId());
@@ -73,5 +87,4 @@ public class ProductController {
 
         return dto;
     }
-
 }

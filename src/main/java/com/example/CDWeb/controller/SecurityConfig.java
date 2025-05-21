@@ -42,6 +42,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/category").permitAll()
                         .requestMatchers("/api/product/**").permitAll()
                         .requestMatchers("/api/logout").permitAll()
+                        .requestMatchers("/api/product/random").permitAll()
+                        //unauthorized
                         .requestMatchers(HttpMethod.GET, "/api/category/{id}").authenticated()
 
                         //cart
