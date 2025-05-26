@@ -101,9 +101,10 @@ public class AuthController {
                     "idUser", user.getId(),
                     "products", products
             ));
+            response.put("message", "logins.success");
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai username hoặc password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("logins.failed");
         }
     }
 
