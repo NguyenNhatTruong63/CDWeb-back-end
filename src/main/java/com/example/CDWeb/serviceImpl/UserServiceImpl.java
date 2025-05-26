@@ -25,9 +25,9 @@ public class UserServiceImpl implements UserService {
     public void register(User user) {
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email đã được sử dụng");
+            throw new IllegalArgumentException("register.email");
         }else if(userRepository.existsByUsername(user.getUsername())) {
-            throw new IllegalArgumentException("Username đã được sử dụng");
+            throw new IllegalArgumentException("register.username");
 
         }else{
             userRepository.save(user);
