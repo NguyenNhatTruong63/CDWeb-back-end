@@ -1,5 +1,6 @@
 package com.example.CDWeb.controller;
 
+import com.example.CDWeb.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,9 +28,11 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, CustomUserDetailsService customUserDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -38,6 +41,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // ✅ Bật CORS
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/category").permitAll()
                         .requestMatchers("/api/product/**").permitAll()
@@ -45,6 +49,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/product/random").permitAll()
                         //unauthorized
                         .requestMatchers(HttpMethod.GET, "/api/category/{id}").authenticated()
+
+                        //user
+                        .requestMatchers(HttpMethod.POST, "/api/cart/user").authenticated()
 
                         //cart
                         .requestMatchers(HttpMethod.POST, "/api/cart/add").authenticated()
@@ -64,7 +71,7 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
-        authenticationManagerBuilder.userDetailsService(userDetailsService())
+        authenticationManagerBuilder.userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder());
 
         return authenticationManagerBuilder.build();
@@ -82,17 +89,17 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> {
-            // Trả về UserDetails chứ không phải entity User của bạn
-            return new User(
-                    username,
-                    passwordEncoder().encode("dummyPassword"), // mã hoá
-                    List.of(new SimpleGrantedAuthority("ROLE_USER")) // role
-            );
-        };
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return username -> {
+//            // Trả về UserDetails chứ không phải entity User của bạn
+//            return new User(
+//                    username,
+//                    passwordEncoder().encode("dummyPassword"), // mã hoá
+//                    List.of(new SimpleGrantedAuthority("ROLE_USER")) // role
+//            );
+//        };
+//    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

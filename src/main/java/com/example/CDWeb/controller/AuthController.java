@@ -93,7 +93,14 @@ public class AuthController {
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("id", user.getId());
             userInfo.put("username", user.getUsername());
-            userInfo.put("email", user.getEmail());
+
+            Set<Role> roles = user.getRoles();
+
+            List<String> roleNames = roles.stream()
+                    .map(Role::getName)
+                    .toList();
+
+           userInfo.put("role", roleNames);
             // thêm thông tin khác nếu cần
 
             response.put("user", userInfo);

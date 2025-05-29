@@ -2,6 +2,9 @@ package com.example.CDWeb.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity  // Đánh dấu đây là một Entity trong database
 @Table(name = "users")  // Liên kết với bảng "users" trong DB
 public class User {
@@ -23,6 +26,13 @@ public class User {
     @Column(length = 255)
     private String address;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
     // Constructors
     public User() {
     }
@@ -34,8 +44,14 @@ public class User {
         this.numberphone = numberphone;
         this.address = address;
     }
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -75,5 +91,13 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
