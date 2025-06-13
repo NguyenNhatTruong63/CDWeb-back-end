@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface UserService {
     void register(User user);
+    void deleteUserById(long id);
     User findByUsername(String username);
     User createUser(User user);
     List<User> getAllUser();

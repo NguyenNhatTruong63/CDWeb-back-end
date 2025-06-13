@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
@@ -36,12 +37,20 @@ public class UserServiceImpl implements UserService {
             Role userRole = roleRepository.findByName("USER");
             user.setRoles(Set.of(userRole));
 
-            User savedUser = userRepository.save(user); // ✅ CHỈ GỌI MỘT LẦN
+            User savedUser = userRepository.save(user);
 
             Cart cart = new Cart();
-            cart.setUserId(savedUser.getId()); // ✅ ID được đảm bảo sau khi save
+            cart.setUserId(savedUser.getId());
             cartRepository.save(cart);
         }
+    }
+
+    @Override
+    public void deleteUserById(long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        userRepository.delete(user);
     }
 
 
