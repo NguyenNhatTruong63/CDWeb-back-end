@@ -1,5 +1,6 @@
 package com.example.CDWeb.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -14,14 +15,17 @@ public class Comment {
     @JoinColumn(name = "product_id", nullable = false) // Foreign Key
     private Product product;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(columnDefinition = "TEXT")
     private String commentText;
 
     private int rating;
-
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // --- Getter, Setter ---
     public Long getId() {
         return id;
     }
@@ -36,6 +40,14 @@ public class Comment {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getCommentText() {
