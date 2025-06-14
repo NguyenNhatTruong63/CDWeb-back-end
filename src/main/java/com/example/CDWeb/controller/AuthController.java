@@ -100,7 +100,7 @@ public class AuthController {
                     .map(Role::getName)
                     .toList();
 
-           userInfo.put("role", roleNames);
+            userInfo.put("role", roleNames);
             // thêm thông tin khác nếu cần
 
             response.put("user", userInfo);
@@ -114,23 +114,9 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("logins.failed");
         }
     }
-
-
-//    @PostMapping("/logout")
-//    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
-//        // Kiểm tra token hợp lệ trước khi logout
-//        if (!tokenService.isTokenValid(token)) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
-//        }
-//
-//        // Xóa token khỏi cơ sở dữ liệu
-//        tokenService.deleteByUsername(jwtUtil.extractUsername(token)); // Cần một hàm để trích xuất username từ token
-//
-//        return ResponseEntity.ok(Map.of("message", "Đăng xuất thành công"));
-//    }
-@PostMapping("/logout")
-public ResponseEntity<?> logout(@RequestParam String username) {
-    tokenService.deleteByUsername(username);
-    return ResponseEntity.ok(Map.of("message", "Đăng xuất thành công"));
-}
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestParam String username) {
+        tokenService.deleteByUsername(username);
+        return ResponseEntity.ok(Map.of("message", "Đăng xuất thành công"));
+    }
 }

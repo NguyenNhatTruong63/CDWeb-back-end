@@ -27,10 +27,10 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-//    @GetMapping("/{id}")
-//    public Product getProductById(@PathVariable Integer id) {
-//        return productService.getProductById(id);
-//    }
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable Integer id) {
+        return productService.getProductById(id);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable int id) {
         Product product = productService.getProductById(id); // hoặc productRepo.findById(id).orElseThrow()
@@ -49,6 +49,7 @@ public class ProductController {
     public List<Product> getRandomProduct(@RequestParam(value = "limit", defaultValue = "4") int limit) {
         return productService.getRandomProducts(limit);
     }
+
     
 
     public ProductResponse convertToResponse(Product product) {
