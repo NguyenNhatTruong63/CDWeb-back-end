@@ -47,7 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/product/**").permitAll()
                         .requestMatchers("/api/logout").permitAll()
                         .requestMatchers("/api/product/random").permitAll()
-                        .requestMatchers("/api/comment").permitAll()
+                        .requestMatchers("/api/comment/product/{id}").permitAll()
+
                         .requestMatchers("/api/comment/product/").permitAll()
                         //unauthorized
                         .requestMatchers(HttpMethod.GET, "/api/category/{id}").authenticated()
@@ -57,6 +58,10 @@ public class SecurityConfig {
 
                         //cart
                         .requestMatchers(HttpMethod.POST, "/api/cart/add").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/comment/add").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/comment/delete/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/comment/update/{id}").authenticated()
+
                         .requestMatchers(HttpMethod.POST, "/api/cart/decrease").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/cart/delete").authenticated()
 
