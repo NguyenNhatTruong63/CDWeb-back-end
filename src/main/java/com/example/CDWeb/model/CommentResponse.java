@@ -1,30 +1,26 @@
 package com.example.CDWeb.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "comment")
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CommentResponse {
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false) // Foreign Key
-    private Product product;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @Column(columnDefinition = "TEXT")
+    private String userName;
+    private int productId;
     private String commentText;
-
     private int rating;
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @JsonFormat(pattern = "dd/MM/yyyy") // định dạng ngày
+    private LocalDateTime createdAt;
+
+    public CommentResponse(Long id,String userName, int productId, String commentText, int rating, LocalDateTime createdAt) {
+        this.id = id;
+        this.userName = userName;
+        this.productId = productId;
+        this.commentText = commentText;
+        this.rating = rating;
+        this.createdAt = createdAt;
+    }
 
     public Long getId() {
         return id;
@@ -34,20 +30,20 @@ public class Comment {
         this.id = id;
     }
 
-    public Product getProduct() {
-        return product;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public User getUser() {
-        return user;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public String getCommentText() {
