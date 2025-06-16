@@ -1,9 +1,8 @@
 package com.example.CDWeb.service;
 
 
+import com.example.CDWeb.model.Role;
 import com.example.CDWeb.model.User;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -15,4 +14,8 @@ public interface UserService {
     List<User> getAllUser();
     User getUserById(String id);
     User findById(long id);
+    List<Role> getRolesFromNames(List<String> roleNames);
+    boolean  existsByUsername(String username);
+    void addUser(User user);
+    void saveUser(User user);
 }

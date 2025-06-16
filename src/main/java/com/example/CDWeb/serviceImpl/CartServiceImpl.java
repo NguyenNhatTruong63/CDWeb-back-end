@@ -2,6 +2,7 @@ package com.example.CDWeb.serviceImpl;
 
 import com.example.CDWeb.model.Cart;
 import com.example.CDWeb.model.CartItem;
+import com.example.CDWeb.model.Product;
 import com.example.CDWeb.repository.CartItemRepository;
 import com.example.CDWeb.repository.CartRepository;
 import com.example.CDWeb.repository.CategoryRepository;
@@ -54,6 +55,9 @@ public class CartServiceImpl implements CartService {
     public void deleteItem(CartItem cartItem) {
         cartItemRepository.delete(cartItem);
     }
-
+    @Override
+    public void deleteCartItemsByProduct(Product product) {
+        cartItemRepository.deleteByProduct(product);
+    }
 
 }
