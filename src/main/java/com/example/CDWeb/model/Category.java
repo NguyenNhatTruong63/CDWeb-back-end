@@ -16,7 +16,7 @@ public class Category {
     private Integer id;
     private String category;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST, orphanRemoval = false)
     @JsonIgnore
     private List<Product> products;
 

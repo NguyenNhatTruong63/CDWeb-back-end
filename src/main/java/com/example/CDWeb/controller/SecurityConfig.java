@@ -38,7 +38,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // ✅ Bật CORS
+                .cors(Customizer.withDefaults()) 
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
@@ -50,20 +50,32 @@ public class SecurityConfig {
                         .requestMatchers("/api/comment/product/{id}").permitAll()
 
                         .requestMatchers("/api/comment/product/").permitAll()
+
                         //unauthorized
+                        //get
                         .requestMatchers(HttpMethod.GET, "/api/category/{id}").authenticated()
 
-                        //user
+                        //post
+                        .requestMatchers(HttpMethod.POST, "/api/category/add").authenticated()
+
                         .requestMatchers(HttpMethod.POST, "/api/cart/user").authenticated()
-
-                        //cart
-                        .requestMatchers(HttpMethod.POST, "/api/cart/add").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/comment/add").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/comment/delete/{id}").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/comment/update/{id}").authenticated()
-
                         .requestMatchers(HttpMethod.POST, "/api/cart/decrease").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/cart/delete").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/cart/add").authenticated()
+
+                        .requestMatchers(HttpMethod.POST, "/api/user/add2").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/comment/add").authenticated()
+
+                        //put
+                        .requestMatchers(HttpMethod.PUT, "/api/user/update/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/comment/update/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/category/update/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/product/update/{id}").authenticated()
+
+                        //delete
+                        .requestMatchers(HttpMethod.DELETE, "/api/comment/delete/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/category/delete/{categoryName}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/product/delete/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/cart/delete").authenticated()
 
                         .anyRequest().authenticated()
                 )

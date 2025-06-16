@@ -10,11 +10,11 @@ import com.example.CDWeb.repository.UserRepository;
 import com.example.CDWeb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -44,6 +44,25 @@ public class UserServiceImpl implements UserService {
             cartRepository.save(cart);
         }
     }
+    @Override
+    public void addUser(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("register.email");
+        } else if (userRepository.existsByUsername(user.getUsername())) {
+            throw new IllegalArgumentException("register.username");
+        } else {
+            User savedUser = userRepository.save(user);
+
+            Cart cart = new Cart();
+            cart.setUserId(savedUser.getId());
+            cartRepository.save(cart);
+        }
+    }
+    @Override
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
 
     @Override
     public void deleteUserById(long id) {
@@ -76,5 +95,19 @@ public class UserServiceImpl implements UserService {
     public User findById(long id) {
         return userRepository.findById(Long.valueOf(id)).orElse(null);
     }
-
+    public List<Role>  getRolesFromNames(List<String> roleNames) {
+        return roleNames.stream()
+                .map(name -> {
+                    Role role = roleRepository.findByName(name);
+                    if (role == null) {
+                        throw new RuntimeException("Không tìm thấy role: " + name);
+                    }
+                    return role;
+                })
+                .collect(Collectors.toList());
+    }
+    @Override
+    public  boolean  existsByUsername(String username){
+        return userRepository.existsByUsername(username);
+    }
 }

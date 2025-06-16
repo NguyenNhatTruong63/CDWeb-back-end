@@ -22,7 +22,7 @@ public class Product {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "category", referencedColumnName = "id") // tên cột trong bảng product
+    @JoinColumn(name = "category", referencedColumnName = "id", nullable = true)
     private Category category;
 
 
@@ -32,7 +32,7 @@ public class Product {
     private List<String> additionalImages;
 
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinTable(
             name = "product_size",
             joinColumns = @JoinColumn(name = "product_id"),
@@ -40,7 +40,7 @@ public class Product {
     )
     private List<Size> sizes;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinTable(
             name = "product_color",
             joinColumns = @JoinColumn(name = "product_id"),
