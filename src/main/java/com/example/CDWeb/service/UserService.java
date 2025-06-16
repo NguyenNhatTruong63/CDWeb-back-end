@@ -5,6 +5,7 @@ import com.example.CDWeb.model.Role;
 import com.example.CDWeb.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     void register(User user);
@@ -18,4 +19,7 @@ public interface UserService {
     boolean  existsByUsername(String username);
     void addUser(User user);
     void saveUser(User user);
+    Optional<User> findByEmail2(String email);
+    boolean resetPassword(String username, String newPassword);
+    boolean resetPasswordByEmail(String email, String newPassword);
 }

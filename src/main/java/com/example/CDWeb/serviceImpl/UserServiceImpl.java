@@ -9,10 +9,12 @@ import com.example.CDWeb.repository.RoleRepository;
 import com.example.CDWeb.repository.UserRepository;
 import com.example.CDWeb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -110,4 +112,43 @@ public class UserServiceImpl implements UserService {
     public  boolean  existsByUsername(String username){
         return userRepository.existsByUsername(username);
     }
+    @Override
+    public Optional<User> findByEmail2(String email) {
+        return userRepository.findByEmail(email);
+    }
+    @Override
+    public boolean resetPassword(String username, String newPassword) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        User user = optionalUser.get();
+
+        if (user.getPassword().equals(newPassword)) {
+            return false; // Mật khẩu mới trùng mật khẩu cũ
+        }
+
+        user.setPassword(newPassword);
+        userRepository.save(user);
+
+        return true;
+    }
+    public boolean resetPasswordByEmail(String email, String newPassword) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            throw new UsernameNotFoundException("Không tìm thấy user");
+        }
+
+        User user = userOptional.get();
+        if (user.getPassword().equals(newPassword)) {
+            throw new IllegalArgumentException("Mật khẩu mới trùng với mật khẩu cũ!");
+        }
+
+        user.setPassword(newPassword);
+        userRepository.save(user);
+        return true;
+    }
+
 }

@@ -8,16 +8,18 @@ import com.example.CDWeb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -168,6 +170,62 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Lỗi");
         }
     }
+    @PostMapping("/getEmail")
+    public ResponseEntity<?> getEmail(@RequestBody EmailRequest request) {
 
+
+        Optional<User> userOptional = userService.findByEmail2(request.getEmail());
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return ResponseEntity.ok(new EmailResponse("Email tồn tại!", user.getEmail()));
+        } else {
+            return ResponseEntity.status(401).body(new ErrorMessage("Email không tồn tại"));
+        }
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request,@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        String token = authorizationHeader.substring(7);
+        if (!tokenService.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        try {
+            boolean updated = userService.resetPassword(request.getUsername(), request.getNewPassword());
+
+            if (!updated) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("message", "Mật khẩu mới trùng với mật khẩu cũ!"));
+            }
+
+            return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
+
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Không tìm thấy user"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Failed to update password"));
+        }
+    }
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/resetPasswordEmail")
+    public ResponseEntity<?> resetPasswordByEmail(@RequestBody ResetPasswordByEmailRequest request) {
+        try {
+            userService.resetPasswordByEmail(request.getEmail(), request.getNewPassword());
+            return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Không tìm thấy user"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to update password"));
+        }
+    }
 
 }

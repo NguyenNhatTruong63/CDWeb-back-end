@@ -48,6 +48,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/logout").permitAll()
                         .requestMatchers("/api/product/random").permitAll()
                         .requestMatchers("/api/comment/product/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/user/getEmail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/user/resetPasswordEmail").permitAll()
 
                         .requestMatchers("/api/comment/product/").permitAll()
 
@@ -63,6 +65,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/cart/add").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/api/user/add2").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/user/resetPassword").authenticated()
+
+
+
                         .requestMatchers(HttpMethod.POST, "/api/comment/add").authenticated()
 
                         //put

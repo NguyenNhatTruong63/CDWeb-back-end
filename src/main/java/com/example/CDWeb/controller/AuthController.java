@@ -104,10 +104,13 @@ public class AuthController {
             // thêm thông tin khác nếu cần
 
             response.put("user", userInfo);
+
+
             response.put("cart", Map.of(
                     "idUser", user.getId(),
                     "products", products
             ));
+            response.put("email", user.getEmail());
             response.put("message", "logins.success");
             return ResponseEntity.ok(response);
         } else {
