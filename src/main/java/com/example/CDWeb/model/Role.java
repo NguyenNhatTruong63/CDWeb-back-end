@@ -11,7 +11,7 @@ public class Role {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name; // ví dụ: "ROLE_USER", "ROLE_ADMIN"
+    private String name;
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
